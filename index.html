@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Catálogo de Tênis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0d;--card:#151518;--line:#26262b;--txt:#f4f4f5;--mut:#9a9aa3;--acc:#d7ff3a;--blue:#2f6bff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+header{padding:28px 20px 8px;max-width:1200px;margin:0 auto}
+.brand{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:'Archivo Black',sans-serif;font-size:clamp(34px,8vw,64px);line-height:.9;letter-spacing:-1px;text-transform:uppercase}
+h1 span{color:var(--acc)}
+.count{color:var(--mut);font-size:14px;margin-top:8px}
+.addbtn{background:var(--acc);color:#0b0b0d;border:0;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer;white-space:nowrap}
+.toolbar{position:sticky;top:0;z-index:5;background:rgba(11,11,13,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.tb{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;flex-direction:column;gap:10px}
+.search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px}
+.search input{flex:1;background:none;border:0;outline:0;padding:12px 0;font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--mut);transition:.2s}
+.chip.on{background:var(--txt);color:#0b0b0d;border-color:var(--txt)}
+.chips{align-items:center}
+.car{display:inline-block;font-size:11px;margin-left:2px;transition:transform .2s}
+.car.up{transform:rotate(180deg)}
+.chips{overflow:visible!important}
+.dd{position:relative;display:inline-block}
+.menu{position:absolute;top:calc(100% + 8px);left:0;min-width:190px;background:#17171b;border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 18px 40px rgba(0,0,0,.6);z-index:30;animation:mdown .18s ease}
+@keyframes mdown{from{opacity:0;transform:translateY(-6px)}}
+.mi{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;color:var(--txt);padding:11px 12px;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;text-align:left}
+.mi:hover{background:#222228}
+.mi.on{background:var(--acc);color:#0b0b0d}
+.mi small{color:var(--mut);font-weight:500;font-size:12px}
+.mi.on small{color:#0b0b0d}
+.frow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.swatches{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding:3px;scrollbar-width:none}
+.swatches::-webkit-scrollbar{display:none}
+.sw{flex:none}
+.sw{width:22px;height:22px;border-radius:50%;border:2px solid #0b0b0d;box-shadow:0 0 0 1px #3a3a42;cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s}
+.sw:hover{transform:scale(1.12)}
+.sw.on{box-shadow:0 0 0 2px var(--acc);transform:scale(1.12)}
+.swlbl{flex:none;white-space:nowrap;font-size:12px;color:var(--mut);cursor:pointer;margin-left:2px}
+.sortsel{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--mut)}
+main{max-width:1200px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;cursor:pointer;position:relative;transition:transform .25s,border-color .25s;animation:in .5s both}
+.card:hover{transform:translateY(-4px);border-color:#3a3a42}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.thumb{aspect-ratio:4/3;background:#000;position:relative;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:opacity .35s,transform .5s}
+.thumb img.alt{position:absolute;inset:0;opacity:0}
+.card:hover .thumb img.alt{opacity:1}
+.card:hover .thumb img{transform:scale(1.04)}
+.badge{position:absolute;top:12px;left:12px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)}
+.badge.tenho{color:var(--acc)}.badge.quero{color:#7fb0ff}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:grid;place-items:center;cursor:pointer;font-size:18px;transition:transform .2s}
+.fav:active{transform:scale(.85)}
+.info{padding:14px 16px 16px}
+.mk{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.nm{font-weight:700;font-size:17px;margin:4px 0 10px;line-height:1.25}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dots{display:flex;gap:5px}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid #0b0b0d;box-shadow:0 0 0 1px #3a3a42}
+.pics{font-size:12px;color:var(--mut)}
+.empty{text-align:center;color:var(--mut);padding:60px 20px}
+/* modal */
+.modal{position:fixed;inset:0;z-index:20;background:rgba(8,8,10,.98);display:none;overflow-y:auto}
+.modal.open{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.mwrap{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+.mwrap>*{min-width:0}
+@media(min-width:880px){.stage{margin-top:0}.mwrap{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);padding:40px 24px;align-items:start}}
+.close{position:fixed;top:14px;right:14px;z-index:25;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:20px;cursor:pointer}
+.stage{position:relative;margin-top:50px;border-radius:20px;overflow:hidden;background:#000;aspect-ratio:3/2;touch-action:pan-y}
+.stage img{width:100%;height:100%;object-fit:contain;transition:transform .3s;cursor:zoom-in;user-select:none;-webkit-user-drag:none}
+.stage.zoom img{transform:scale(2.2);cursor:zoom-out}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.55);font-size:20px;cursor:pointer;backdrop-filter:blur(6px)}
+.nav.p{left:10px}.nav.n{right:10px}
+.idx{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:12px;background:rgba(0,0,0,.6);padding:4px 10px;border-radius:999px}
+.strip{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+.strip img{flex:none;width:84px;height:58px;object-fit:cover;border-radius:10px;opacity:.45;cursor:pointer;border:2px solid transparent;transition:.2s}
+.strip img.on{opacity:1;border-color:var(--acc)}
+.side h2{overflow-wrap:anywhere;padding-right:4px;font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1;text-transform:uppercase;margin:6px 0 14px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.spec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.spec small{display:block;color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.spec b{font-size:14px}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:10px;border-radius:10px;font-weight:600;font-size:14px;color:var(--mut);cursor:pointer}
+.seg button.on{background:var(--txt);color:#0b0b0d}
+label.l{display:block;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 6px}
+textarea,.inp{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px;outline:0}
+textarea{min-height:90px;resize:vertical}
+textarea:focus,.inp:focus{border-color:#55555f}
+.saved{font-size:12px;color:var(--acc);height:16px;margin-top:6px}
+.bigfav{width:100%;margin-top:14px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-weight:700;cursor:pointer}
+.bigfav.on{background:#ff3b5c;border-color:#ff3b5c}
+.del{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px solid #3a2228;background:none;color:#ff7a8f;font-weight:600;cursor:pointer}
+/* add sheet */
+.sheet .mwrap{max-width:560px;display:block}
+.sheet h2{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:28px;margin:30px 0 6px}
+.sheet p.h{color:var(--mut);font-size:14px;margin-bottom:8px}
+.drop{border:2px dashed #3a3a42;border-radius:18px;padding:26px;text-align:center;color:var(--mut);cursor:pointer;margin-top:6px}
+.prev{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.prev img{width:70px;height:50px;object-fit:cover;border-radius:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.save{width:100%;margin:20px 0 40px;background:var(--acc);color:#0b0b0d;border:0;border-radius:14px;padding:15px;font-weight:700;cursor:pointer}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--txt);color:#0b0b0d;padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;transition:.3s;z-index:40}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div><h1>Meu<br><span>Catálogo</span></h1><div class="count" id="count"></div></div>
+  </div>
+</header>
+<div class="toolbar"><div class="tb">
+  <div class="search"><span>🔍</span><input id="q" placeholder="Buscar por nome, marca ou cor..."></div>
+  <div class="frow"><div class="chips" id="chips"></div><div class="swatches" id="swatches"></div></div>
+</div></div>
+<main><div class="grid" id="grid"></div><div class="empty" id="empty" hidden>Nenhum tênis encontrado.</div></main>
+
+<div class="modal" id="modal">
+  <button class="close" data-close>✕</button>
+  <div class="mwrap">
+    <div>
+      <div class="stage" id="stage"><img id="big" alt=""><button class="nav p" id="prev">‹</button><button class="nav n" id="next">›</button><div class="idx" id="idx"></div></div>
+      <div class="strip" id="strip"></div>
+    </div>
+    <div class="side">
+      <div class="mk" id="mMk"></div>
+      <h2 id="mNm"></h2>
+      <div class="specs" id="specs"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=["img/t1_1.jpg", "img/t1_2.jpg", "img/t1_3.jpg", "img/t1_4.jpg", "img/t1_5.jpg", "img/t1_6.jpg"];
+const IMGS2=["img/t2_1.jpg", "img/t2_2.jpg", "img/t2_3.jpg", "img/t2_4.jpg", "img/t2_5.jpg", "img/t2_6.jpg"];
+const IMGS3=["img/t3_1.jpg", "img/t3_2.jpg", "img/t3_3.jpg", "img/t3_4.jpg", "img/t3_5.jpg", "img/t3_6.jpg"];
+const IMGS4=["img/t4_1.jpg", "img/t4_2.jpg", "img/t4_3.jpg", "img/t4_4.jpg", "img/t4_5.jpg", "img/t4_6.jpg"];
+const IMGS5=["img/t5_1.jpg", "img/t5_2.jpg", "img/t5_3.jpg", "img/t5_4.jpg", "img/t5_5.jpg", "img/t5_6.jpg"];
+const IMGS6=["img/t6_1.jpg", "img/t6_2.jpg", "img/t6_3.jpg", "img/t6_4.jpg", "img/t6_5.jpg", "img/t6_6.jpg"];
+const IMGS7=["img/t7_1.jpg", "img/t7_2.jpg", "img/t7_3.jpg", "img/t7_4.jpg", "img/t7_5.jpg", "img/t7_6.jpg"];
+const IMGS8=["img/t8_1.jpg", "img/t8_2.jpg", "img/t8_3.jpg", "img/t8_4.jpg", "img/t8_5.jpg", "img/t8_6.jpg"];
+const IMGS9=["img/t9_1.jpg", "img/t9_2.jpg", "img/t9_3.jpg", "img/t9_4.jpg", "img/t9_5.jpg", "img/t9_6.jpg"];
+const IMGS10=["img/t10_1.jpg", "img/t10_2.jpg", "img/t10_3.jpg", "img/t10_4.jpg", "img/t10_5.jpg", "img/t10_6.jpg"];
+const IMGS11=["img/t11_1.jpg", "img/t11_2.jpg", "img/t11_3.jpg", "img/t11_4.jpg", "img/t11_5.jpg", "img/t11_6.jpg"];
+const IMGS12=["img/t12_1.jpg", "img/t12_2.jpg", "img/t12_3.jpg", "img/t12_4.jpg", "img/t12_5.jpg", "img/t12_6.jpg"];
+const IMGS13=["img/t13_1.jpg", "img/t13_2.jpg", "img/t13_3.jpg", "img/t13_4.jpg", "img/t13_5.jpg", "img/t13_6.jpg"];
+const IMGS14=["img/t14_1.jpg", "img/t14_2.jpg", "img/t14_3.jpg", "img/t14_4.jpg", "img/t14_5.jpg", "img/t14_6.jpg"];
+const IMGS15=["img/t15_1.jpg", "img/t15_2.jpg", "img/t15_3.jpg", "img/t15_4.jpg", "img/t15_5.jpg", "img/t15_6.jpg"];
+const IMGS16=["img/t16_1.jpg", "img/t16_2.jpg", "img/t16_3.jpg", "img/t16_4.jpg", "img/t16_5.jpg", "img/t16_6.jpg"];
+const IMGS17=["img/t17_1.jpg", "img/t17_2.jpg", "img/t17_3.jpg", "img/t17_4.jpg", "img/t17_5.jpg", "img/t17_6.jpg"];
+const IMGS18=["img/t18_1.jpg", "img/t18_2.jpg", "img/t18_3.jpg", "img/t18_4.jpg", "img/t18_5.jpg", "img/t18_6.jpg"];
+const IMGS19=["img/t19_1.jpg", "img/t19_2.jpg", "img/t19_3.jpg", "img/t19_4.jpg", "img/t19_5.jpg", "img/t19_6.jpg"];
+const IMGS20=["img/t20_1.jpg", "img/t20_2.jpg", "img/t20_3.jpg", "img/t20_4.jpg", "img/t20_5.jpg", "img/t20_6.jpg"];
+const IMGS21=["img/t21_1.jpg", "img/t21_2.jpg", "img/t21_3.jpg", "img/t21_4.jpg", "img/t21_5.jpg", "img/t21_6.jpg"];
+const IMGS22=["img/t22_1.jpg", "img/t22_2.jpg", "img/t22_3.jpg", "img/t22_4.jpg", "img/t22_5.jpg", "img/t22_6.jpg"];
+const IMGS23=["img/t23_1.jpg", "img/t23_2.jpg", "img/t23_3.jpg", "img/t23_4.jpg", "img/t23_5.jpg", "img/t23_6.jpg"];
+const IMGS24=["img/t24_1.jpg", "img/t24_2.jpg", "img/t24_3.jpg", "img/t24_4.jpg", "img/t24_5.jpg", "img/t24_6.jpg"];
+const IMGS25=["img/t25_1.jpg", "img/t25_2.jpg", "img/t25_3.jpg", "img/t25_4.jpg", "img/t25_5.jpg", "img/t25_6.jpg"];
+const IMGS26=["img/t26_1.jpg", "img/t26_2.jpg", "img/t26_3.jpg", "img/t26_4.jpg", "img/t26_5.jpg", "img/t26_6.jpg"];
+const IMGS27=["img/t27_1.jpg", "img/t27_2.jpg", "img/t27_3.jpg", "img/t27_4.jpg", "img/t27_5.jpg", "img/t27_6.jpg"];
+const IMGS28=["img/t28_1.jpg", "img/t28_2.jpg", "img/t28_3.jpg", "img/t28_4.jpg", "img/t28_5.jpg", "img/t28_6.jpg"];
+const IMGS29=["img/t29_1.jpg", "img/t29_2.jpg", "img/t29_3.jpg", "img/t29_4.jpg", "img/t29_5.jpg", "img/t29_6.jpg"];
+const IMGS30=["img/t30_1.jpg", "img/t30_2.jpg", "img/t30_3.jpg", "img/t30_4.jpg", "img/t30_5.jpg", "img/t30_6.jpg"];
+const IMGS31=["img/t31_1.jpg", "img/t31_2.jpg", "img/t31_3.jpg", "img/t31_4.jpg", "img/t31_5.jpg", "img/t31_6.jpg"];
+const IMGS32=["img/t32_1.jpg", "img/t32_2.jpg", "img/t32_3.jpg", "img/t32_4.jpg", "img/t32_5.jpg", "img/t32_6.jpg"];
+const IMGS33=["img/t33_1.jpg", "img/t33_2.jpg", "img/t33_3.jpg", "img/t33_4.jpg", "img/t33_5.jpg", "img/t33_6.jpg"];
+const IMGS34=["img/t34_1.jpg", "img/t34_2.jpg", "img/t34_3.jpg", "img/t34_4.jpg", "img/t34_5.jpg", "img/t34_6.jpg"];
+const IMGS35=["img/t35_1.jpg", "img/t35_2.jpg", "img/t35_3.jpg", "img/t35_4.jpg", "img/t35_5.jpg", "img/t35_6.jpg"];
+const IMGS36=["img/t36_1.jpg", "img/t36_2.jpg", "img/t36_3.jpg", "img/t36_4.jpg", "img/t36_5.jpg", "img/t36_6.jpg"];
+const IMGS37=["img/t37_1.jpg", "img/t37_2.jpg", "img/t37_3.jpg", "img/t37_4.jpg", "img/t37_5.jpg", "img/t37_6.jpg"];
+const IMGS38=["img/t38_1.jpg", "img/t38_2.jpg", "img/t38_3.jpg", "img/t38_4.jpg", "img/t38_5.jpg", "img/t38_6.jpg"];
+const IMGS39=["img/t39_1.jpg", "img/t39_2.jpg", "img/t39_3.jpg", "img/t39_4.jpg", "img/t39_5.jpg", "img/t39_6.jpg"];
+const IMGS40=["img/t40_1.jpg", "img/t40_2.jpg", "img/t40_3.jpg", "img/t40_4.jpg", "img/t40_5.jpg", "img/t40_6.jpg"];
+const IMGS41=["img/t41_1.jpg", "img/t41_2.jpg", "img/t41_3.jpg", "img/t41_4.jpg", "img/t41_5.jpg", "img/t41_6.jpg"];
+const IMGS42=["img/t42_1.jpg", "img/t42_2.jpg", "img/t42_3.jpg", "img/t42_4.jpg", "img/t42_5.jpg", "img/t42_6.jpg"];
+const IMGS43=["img/t43_1.jpg", "img/t43_2.jpg", "img/t43_3.jpg", "img/t43_4.jpg", "img/t43_5.jpg", "img/t43_6.jpg"];
+const IMGS44=["img/t44_1.jpg", "img/t44_2.jpg", "img/t44_3.jpg", "img/t44_4.jpg", "img/t44_5.jpg", "img/t44_6.jpg"];
+const IMGS45=["img/t45_1.jpg", "img/t45_2.jpg", "img/t45_3.jpg", "img/t45_4.jpg", "img/t45_5.jpg", "img/t45_6.jpg"];
+const IMGS46=["img/t46_1.jpg", "img/t46_2.jpg", "img/t46_3.jpg", "img/t46_4.jpg", "img/t46_5.jpg", "img/t46_6.jpg"];
+const IMGS47=["img/t47_1.jpg", "img/t47_2.jpg", "img/t47_3.jpg", "img/t47_4.jpg", "img/t47_5.jpg", "img/t47_6.jpg"];
+const IMGS48=["img/t48_1.jpg", "img/t48_2.jpg", "img/t48_3.jpg", "img/t48_4.jpg", "img/t48_5.jpg", "img/t48_6.jpg"];
+const IMGS49=["img/t49_1.jpg", "img/t49_2.jpg", "img/t49_3.jpg", "img/t49_4.jpg", "img/t49_5.jpg", "img/t49_6.jpg"];
+const IMGS50=["img/t50_1.jpg", "img/t50_2.jpg", "img/t50_3.jpg", "img/t50_4.jpg", "img/t50_5.jpg", "img/t50_6.jpg"];
+const IMGS51=["img/t51_1.jpg", "img/t51_2.jpg", "img/t51_3.jpg", "img/t51_4.jpg", "img/t51_5.jpg", "img/t51_6.jpg"];
+const IMGS52=["img/t52_1.jpg", "img/t52_2.jpg", "img/t52_3.jpg", "img/t52_4.jpg", "img/t52_5.jpg", "img/t52_6.jpg"];
+const IMGS53=["img/t53_1.jpg", "img/t53_2.jpg", "img/t53_3.jpg", "img/t53_4.jpg", "img/t53_5.jpg", "img/t53_6.jpg"];
+const IMGS56=["img/t56_1.jpg", "img/t56_2.jpg", "img/t56_3.jpg", "img/t56_4.jpg", "img/t56_5.jpg", "img/t56_6.jpg"];
+const IMGS57=["img/t57_1.jpg", "img/t57_2.jpg", "img/t57_3.jpg", "img/t57_4.jpg", "img/t57_5.jpg", "img/t57_6.jpg"];
+const IMGS58=["img/t58_1.jpg", "img/t58_2.jpg", "img/t58_3.jpg", "img/t58_4.jpg", "img/t58_5.jpg", "img/t58_6.jpg"];
+const COLORS={Azul:'#2f6bff',Branco:'#f4f4f5',Preto:'#111',Vermelho:'#e3263a',Verde:'#2fbf5a',Cinza:'#8a8a93',Bege:'#d9c3a0',Rosa:'#ff8fb8',Amarelo:'#ffd23a',Marrom:'#7a4a2a',Laranja:'#ff7a1a',Roxo:'#8a4dff'};
+const BASE=[{id:'dunk-racer-blue',nome:'Dunk Low "Racer Blue"',marca:'Nike',cores:['Azul','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro',imgs:IMGS},
+ {id:'sb-black-pigeon',nome:'SB Dunk Low "Black Pigeon"',marca:'Nike',cores:['Preto','Vermelho'],linha:'SB Dunk',cano:'Baixo',material:'Couro e nobuck',imgs:IMGS2},
+ {id:'dunk-pink-lace',nome:'Dunk Low "Pink Lace"',marca:'Nike',cores:['Rosa','Roxo'],linha:'Dunk',cano:'Baixo',material:'Couro e renda',imgs:IMGS3},
+ {id:'dunk-white-navy',nome:'Dunk Low "Midnight Navy"',marca:'Nike',cores:['Branco','Azul'],linha:'Dunk',cano:'Baixo',material:'Couro',imgs:IMGS4},
+ {id:'dunk-mica-green',nome:'Dunk Low "Mica Green"',marca:'Nike',cores:['Verde','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro',imgs:IMGS5},
+ {id:'dunk-purple-pulse',nome:'Dunk Low "Purple Pulse"',marca:'Nike',cores:['Roxo','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro e camurça',imgs:IMGS6},
+ {id:'dunk-football-grey',nome:'Dunk Low "Football Grey"',marca:'Nike',cores:['Azul','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro',imgs:IMGS7},
+ {id:'dunk-nn-elemental-pink',nome:'Dunk Low Next Nature "Elemental Pink"',marca:'Nike',cores:['Rosa','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro sintético',imgs:IMGS8},
+ {id:'dunk-white-grey',nome:'Dunk Low "White Grey"',marca:'Nike',cores:['Branco','Cinza'],linha:'Dunk',cano:'Baixo',material:'Couro e camurça',imgs:IMGS9},
+ {id:'sb-university-blue-gum',nome:'SB Dunk Low Pro ISO "University Blue Gum"',marca:'Nike',cores:['Azul','Branco'],linha:'SB Dunk',cano:'Baixo',material:'Nobuck e camurça',imgs:IMGS10},
+ {id:'dunk-triple-pink',nome:'Dunk Low "Triple Pink"',marca:'Nike',cores:['Rosa','Branco'],linha:'Dunk',cano:'Baixo',material:'Couro',imgs:IMGS11},
+ {id:'sb-rayssa-leal',nome:'SB Dunk Low "Rayssa Leal"',marca:'Nike',cores:['Bege','Roxo','Azul','Branco'],linha:'SB Dunk',cano:'Baixo',material:'Couro e camurça',imgs:IMGS12},
+ {id:'sb-mummy',nome:'SB Dunk Low "Mummy"',marca:'Nike',cores:['Bege','Cinza'],linha:'SB Dunk',cano:'Baixo',material:'Lona',imgs:IMGS13},
+ {id:'sb-chunky-dunky',nome:'SB Dunk Low "Chunky Dunky"',marca:'Nike',cores:['Azul','Amarelo','Verde','Branco','Preto'],linha:'SB Dunk',cano:'Baixo',material:'Pelo e couro',imgs:IMGS14},
+ {id:'sb-born-raised',nome:'SB Dunk Low Born x Raised "One Block at a Time"',marca:'Nike',cores:['Azul','Branco'],linha:'SB Dunk',cano:'Baixo',material:'Couro e nobuck',imgs:IMGS15},
+ {id:'sb-club-58-gulf',nome:'SB Dunk Low "Club 58 Gulf"',marca:'Nike',cores:['Azul','Laranja','Branco'],linha:'SB Dunk',cano:'Baixo',material:'Camurça',imgs:IMGS16},
+ {id:'sb-night-of-mischief',nome:'SB Dunk Low "Night of Mischief"',marca:'Nike',cores:['Preto','Laranja','Roxo','Verde'],linha:'SB Dunk',cano:'Baixo',material:'Camurça e couro',imgs:IMGS17},
+ {id:'aj1-low-mocha',nome:'Air Jordan 1 Low OG "Mocha"',marca:'Nike',cores:['Preto','Branco','Marrom'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e camurça',imgs:IMGS18},
+ {id:'aj1-low-obsidian-unc',nome:'Air Jordan 1 Low OG "Obsidian UNC"',marca:'Nike',cores:['Azul','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS19},
+ {id:'aj1-low-midnight-navy',nome:'Air Jordan 1 Low "Midnight Navy"',marca:'Nike',cores:['Azul','Cinza','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS20},
+ {id:'aj1-low-rosa',nome:'Air Jordan 1 Low Rosa e Branco',marca:'Nike',cores:['Rosa','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS21},
+ {id:'aj1-low-travis-rosa',nome:'Air Jordan 1 Low Travis Scott Rosa',marca:'Nike',cores:['Rosa','Vermelho','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS22},
+ {id:'aj1-low-travis-reverse-mocha',nome:'Air Jordan 1 Low Travis Scott "Reverse Mocha"',marca:'Nike',cores:['Branco','Marrom','Bege'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e nobuck',imgs:IMGS23},
+ {id:'aj1-low-travis-fragment',nome:'Air Jordan 1 Low Travis Scott x Fragment',marca:'Nike',cores:['Branco','Preto','Azul'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS24},
+ {id:'aj1-low-travis-fragment-sail',nome:'Air Jordan 1 Low Travis Scott x Fragment "Sail"',marca:'Nike',cores:['Branco','Azul','Bege'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS25},
+ {id:'aj1-low-glacier-blue',nome:'Air Jordan 1 Low "Glacier Blue"',marca:'Nike',cores:['Azul','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS26},
+ {id:'aj1-low-valentines',nome:'Air Jordan 1 Low "Valentine\'s Day"',marca:'Nike',cores:['Vermelho'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e nobuck',imgs:IMGS27},
+ {id:'aj1-low-travis-black-phantom',nome:'Air Jordan 1 Low Travis Scott "Black Phantom"',marca:'Nike',cores:['Preto'],linha:'Air Jordan 1',cano:'Baixo',material:'Camurça e nobuck',imgs:IMGS28},
+ {id:'aj1-low-travis-canary',nome:'Air Jordan 1 Low Travis Scott "Canary"',marca:'Nike',cores:['Amarelo','Azul','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e camurça',imgs:IMGS29},
+ {id:'aj1-low-travis-pink-sail',nome:'Air Jordan 1 Low Travis Scott Rosa e Creme',marca:'Nike',cores:['Rosa','Branco','Bege'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e nobuck',imgs:IMGS30},
+ {id:'aj1-low-gym-red-white',nome:'Air Jordan 1 Low "Gym Red White"',marca:'Nike',cores:['Vermelho','Branco'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS31},
+ {id:'aj1-low-grey-navy-gum',nome:'Air Jordan 1 Low Cinza, Azul-Marinho e Caramelo',marca:'Nike',cores:['Cinza','Branco','Azul'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS32},
+ {id:'aj1-low-true-blue-cement',nome:'Air Jordan 1 Low SE "True Blue"',marca:'Nike',cores:['Azul','Branco','Cinza','Preto'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro e camurça',imgs:IMGS33},
+ {id:'aj1-low-og-royal',nome:'Air Jordan 1 Low OG "Royal"',marca:'Nike',cores:['Preto','Azul'],linha:'Air Jordan 1',cano:'Baixo',material:'Couro',imgs:IMGS34},
+ {id:'aj4-university-blue',nome:'Air Jordan 4 "University Blue"',marca:'Nike',cores:['Azul','Cinza','Preto'],linha:'Air Jordan 4',cano:'Médio',material:'Camurça',imgs:IMGS35},
+ {id:'aj4-sb-navy',nome:'Air Jordan 4 x Nike SB "Navy"',marca:'Nike',cores:['Branco','Azul','Cinza'],linha:'Air Jordan 4',cano:'Médio',material:'Couro e camurça',imgs:IMGS36},
+ {id:'aj4-travis-cactus-jack',nome:'Air Jordan 4 Travis Scott "Cactus Jack"',marca:'Nike',cores:['Azul','Preto','Vermelho'],linha:'Air Jordan 4',cano:'Médio',material:'Camurça',imgs:IMGS37},
+ {id:'aj4-nigel-brick-by-brick',nome:'Air Jordan 4 Nigel Sylvester "Brick by Brick"',marca:'Nike',cores:['Vermelho'],linha:'Air Jordan 4',cano:'Médio',material:'Nobuck e couro texturizado',imgs:IMGS38},
+ {id:'aj4-military-blue',nome:'Air Jordan 4 "Military Blue"',marca:'Nike',cores:['Branco','Azul','Cinza'],linha:'Air Jordan 4',cano:'Médio',material:'Couro e camurça',imgs:IMGS39},
+ {id:'aj5-white-metallic',nome:'Air Jordan 5 "White Metallic"',marca:'Nike',cores:['Branco','Cinza'],linha:'Air Jordan 5',cano:'Médio',material:'Couro',imgs:IMGS40},
+ {id:'aj1-high-unc-reimagined',nome:'Air Jordan 1 High OG "UNC Reimagined"',marca:'Nike',cores:['Azul','Branco','Bege'],linha:'Air Jordan 1',cano:'Alto',material:'Couro',imgs:IMGS41},
+ {id:'aj1-high-next-chapter',nome:'Air Jordan 1 High OG "Next Chapter"',marca:'Nike',cores:['Vermelho','Rosa','Branco','Preto'],linha:'Air Jordan 1',cano:'Alto',material:'Couro, camurça e verniz',imgs:IMGS42},
+ {id:'af1-low-triple-white',nome:'Air Force 1 \'07 Low "Triple White"',marca:'Nike',cores:['Branco'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS43},
+ {id:'af1-low-triple-red',nome:'Air Force 1 \'07 Low "Triple Red"',marca:'Nike',cores:['Vermelho'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS44},
+ {id:'af1-low-triple-black',nome:'Air Force 1 \'07 Low "Triple Black"',marca:'Nike',cores:['Preto'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS45},
+ {id:'af1-cpfm-sunshine',nome:'Air Force 1 Low x CPFM "Sunshine" Fuchsia',marca:'Nike',cores:['Rosa','Roxo'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS46},
+ {id:'af1-cpfm-sunshine-white',nome:'Air Force 1 Low x CPFM "Sunshine" White',marca:'Nike',cores:['Branco'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS47},
+ {id:'af1-cpfm-sunshine-moss',nome:'Air Force 1 Low x CPFM "Sunshine" Moss',marca:'Nike',cores:['Verde'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS48},
+ {id:'af1-cpfm-flea-black',nome:'Air Force 1 Low x CPFM "Flea" Black',marca:'Nike',cores:['Preto','Branco'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS49},
+ {id:'af1-nocta-citron-tint',nome:'Air Force 1 Low x NOCTA "Certified Lover Boy" Citron Tint',marca:'Nike',cores:['Amarelo'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS50},
+ {id:'af1-low-carbon-fiber',nome:'Air Force 1 Low "Carbon Fiber" Black',marca:'Nike',cores:['Preto'],linha:'Air Force 1',cano:'Baixo',material:'Couro com textura de fibra de carbono',imgs:IMGS51},
+ {id:'af1-cpfm-flea-white',nome:'Air Force 1 Low x CPFM "Flea" White',marca:'Nike',cores:['Branco','Vermelho'],linha:'Air Force 1',cano:'Baixo',material:'Couro',imgs:IMGS52},
+ {id:'birk-arizona-stone-coin',nome:'Birkenstock Arizona Suede "Stone Coin"',marca:'Birkenstock',cores:['Cinza','Marrom'],linha:'Arizona',cano:'Sandália',material:'Camurça e cortiça',imgs:IMGS53},
+ {id:'birk-milano-black',nome:'Birkenstock Milano Birko-Flor "Black"',marca:'Birkenstock',cores:['Preto','Marrom'],linha:'Milano',cano:'Sandália',material:'Birko-Flor e cortiça',imgs:IMGS56},
+ {id:'birk-boston-braided-taupe',nome:'Birkenstock Boston Braided Suede "Taupe"',marca:'Birkenstock',cores:['Cinza','Bege','Marrom'],linha:'Boston',cano:'Babuche',material:'Camurça e cortiça',imgs:IMGS57},
+ {id:'birk-arizona-stone',nome:'Birkenstock Arizona Birko-Flor "Stone"',marca:'Birkenstock',cores:['Cinza','Preto'],linha:'Arizona',cano:'Sandália',material:'Birko-Flor e cortiça',imgs:IMGS58}];
+const S={get(k,d){try{const v=localStorage.getItem('cat_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('cat_'+k,JSON.stringify(v))}catch(e){}}};
+let meta=S.get('meta',{}); // id -> {fav,status,note,size}
+let filter='Todos', cor='', nikeOpen=false; let cur=null, ci=0;
+const $=id=>document.getElementById(id);
+const M=id=>meta[id]||(meta[id]={});
+const all=()=>BASE;
+
+
+const fam=s=>s.marca!=='Nike'?s.marca:/jordan/i.test(s.linha)?'Jordan':/air force/i.test(s.linha)?'Air Force':'Dunk';
+function chips(){
+  const fams=['Dunk','Jordan','Air Force'].filter(f=>all().some(s=>fam(s)===f));
+  const cores=[...new Set(all().flatMap(s=>s.cores))];
+  const nikeOn=filter==='Nike'||fams.includes(filter);
+  const lbl=fams.includes(filter)?'Nike · '+filter:'Nike';
+  $('chips').innerHTML=`<button class="chip ${filter==='Todos'?'on':''}" data-b="Todos">Todos</button>`+
+    `<span class="dd"><button class="chip ${nikeOn?'on':''}" data-b="Nike">${lbl} <span class="car ${nikeOpen?'up':''}">▾</span></button>`+
+    (nikeOpen?`<div class="menu"><button class="mi ${filter==='Nike'?'on':''}" data-b="NikeAll">Todos os Nike</button>`+fams.map(c=>`<button class="mi ${c===filter?'on':''}" data-b="${c}">${c}<small>${all().filter(s=>fam(s)===c).length}</small></button>`).join('')+`</div>`:'')+`</span>`+[...new Set(all().filter(s=>s.marca!=='Nike').map(s=>s.marca))].map(m=>`<button class="chip ${filter===m?'on':''}" data-b="${m}">${m}</button>`).join('');
+  $('chips').querySelectorAll('[data-b]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const v=b.dataset.b;
+    if(v==='Nike'){nikeOpen=!nikeOpen;}
+    else if(v==='Todos'){filter='Todos'; nikeOpen=false;}
+    else if(v==='NikeAll'){filter='Nike'; nikeOpen=false;}
+    else {filter=v; nikeOpen=false;}
+    chips();render()});
+  $('swatches').innerHTML=cores.map(c=>`<button class="sw ${c===cor?'on':''}" data-c="${c}" title="${c}" aria-label="${c}" style="background:${COLORS[c]||'#666'}"></button>`).join('')+(cor?`<span class="swlbl">${cor} ✕</span>`:'');
+  [...$('swatches').querySelectorAll('.sw')].forEach(b=>b.onclick=()=>{cor=cor===b.dataset.c?'':b.dataset.c;chips();render()});
+  const l=$('swatches').querySelector('.swlbl'); if(l) l.onclick=()=>{cor='';chips();render()};
+}
+function match(s){
+  const q=$('q').value.trim().toLowerCase();
+  if(q && !(s.nome+' '+s.marca+' '+s.cores.join(' ')).toLowerCase().includes(q))return false;
+  if(filter!=='Todos' && filter!=='Nike' && fam(s)!==filter)return false;
+  if(filter==='Nike' && s.marca!=='Nike')return false;
+  if(cor && !s.cores.includes(cor))return false;
+  return true;
+}
+function render(){
+  const list=all().filter(match);
+  $('count').textContent=`${all().length} ${all().length===1?'par':'pares'}`;
+  $('empty').hidden=list.length>0;
+  $('grid').innerHTML=list.map((s,i)=>{const m=M(s.id);return `
+  <article class="card" data-id="${s.id}" style="animation-delay:${i*60}ms">
+    <div class="thumb"><img src="${s.imgs[0]}" alt="">${s.imgs[1]?`<img class="alt" src="${s.imgs[1]}" alt="">`:''}
+</div>
+    <div class="info"><div class="mk">${s.marca}</div><div class="nm">${esc(s.nome)}</div>
+      <div class="row"><div class="dots">${s.cores.map(c=>`<span class="dot" style="background:${COLORS[c]||'#666'}" title="${c}"></span>`).join('')}</div>
+      <span class="pics">📷 ${s.imgs.length} fotos</span></div></div>
+  </article>`}).join('');
+  document.querySelectorAll('.card').forEach(c=>c.onclick=e=>{open(c.dataset.id)});
+}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function open(id){
+  cur=all().find(s=>s.id===id);ci=0;const m=M(id);
+  $('mMk').textContent=cur.marca;$('mNm').textContent=cur.nome;
+  const sp=[['Marca',cur.marca],['Cores',cur.cores.join(' / ')],['Linha',cur.linha||'—'],['Cano',cur.cano||'—'],['Material',cur.material||'—'],['Fotos',cur.imgs.length]];
+  $('specs').innerHTML=sp.map(([a,b])=>`<div class="spec"><small>${a}</small><b>${esc(b)}</b></div>`).join('');
+  
+  $('strip').innerHTML=cur.imgs.map((s,i)=>`<img src="${s}" data-i="${i}">`).join('');
+  [...$('strip').children].forEach(t=>t.onclick=()=>show(+t.dataset.i));
+  show(0);
+  $('modal').classList.add('open');document.body.style.overflow='hidden';
+}
+function show(i){ci=(i+cur.imgs.length)%cur.imgs.length;$('stage').classList.remove('zoom');$('big').src=cur.imgs[ci];$('idx').textContent=`${ci+1} / ${cur.imgs.length}`;[...$('strip').children].forEach((t,j)=>t.classList.toggle('on',j===ci));$('strip').children[ci]?.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})}
+
+$('prev').onclick=e=>{e.stopPropagation();show(ci-1)};$('next').onclick=e=>{e.stopPropagation();show(ci+1)};
+$('big').onclick=e=>{const st=$('stage');if(st.classList.contains('zoom')){st.classList.remove('zoom');return}const r=st.getBoundingClientRect();$('big').style.transformOrigin=`${(e.clientX-r.left)/r.width*100}% ${(e.clientY-r.top)/r.height*100}%`;st.classList.add('zoom')};
+let sx=null;$('stage').addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+$('stage').addEventListener('touchend',e=>{if(sx===null||$('stage').classList.contains('zoom'))return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>40)show(ci+(d<0?1:-1));sx=null});
+function closeAll(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('open'));document.body.style.overflow=''}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeAll);
+document.addEventListener('keydown',e=>{if(!$('modal').classList.contains('open'))return;if(e.key==='Escape')closeAll();if(e.key==='ArrowRight')show(ci+1);if(e.key==='ArrowLeft')show(ci-1)});
+
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),1800)}
+
+chips();render();
+document.addEventListener('click',()=>{if(nikeOpen){nikeOpen=false;chips()}});
+</script>
+</body>
+</html>
